@@ -1,0 +1,49 @@
+-- Initial schema for EduTrack (SQL Server)
+
+CREATE TABLE Schools (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    Name NVARCHAR(200) NOT NULL,
+    Location NVARCHAR(200) NULL
+);
+
+CREATE TABLE Students (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    FullName NVARCHAR(200) NOT NULL,
+    GradeLevel NVARCHAR(50) NULL,
+    SchoolId UNIQUEIDENTIFIER NULL,
+    CONSTRAINT FK_Students_Schools FOREIGN KEY (SchoolId) REFERENCES Schools(Id)
+);
+
+CREATE TABLE Teachers (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    FullName NVARCHAR(200) NOT NULL,
+    SubjectSpeciality NVARCHAR(100) NULL,
+    SchoolId UNIQUEIDENTIFIER NULL
+);
+
+CREATE TABLE Subjects (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    Name NVARCHAR(200) NOT NULL,
+    GradeLevel NVARCHAR(50) NULL
+);
+
+CREATE TABLE Grades (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    StudentId UNIQUEIDENTIFIER NOT NULL,
+    SubjectId UNIQUEIDENTIFIER NOT NULL,
+    Mark DECIMAL(5,2) NOT NULL,
+    Term NVARCHAR(50) NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CONSTRAINT FK_Grades_Students FOREIGN KEY (StudentId) REFERENCES Students(Id),
+    CONSTRAINT FK_Grades_Subjects FOREIGN KEY (SubjectId) REFERENCES Subjects(Id)
+);
+
+CREATE TABLE Attendances (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    StudentId UNIQUEIDENTIFIER NOT NULL,
+    Date DATETIME2 NOT NULL,
+    Status INT NOT NULL,
+    CONSTRAINT FK_Attendances_Students FOREIGN KEY (StudentId) REFERENCES Students(Id)
+);
+
+-- Note: Identity tables are not created here. Use ASP.NET Identity migrations or run the app with migrations.
